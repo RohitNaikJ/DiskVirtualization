@@ -34,15 +34,15 @@ class replication:
         if id not in self.disks:
             print("No such Disk")
             return
-        if blockNo >= len(self.disks[id]):
+        if blockNo > len(self.disks[id]) or blockNo < 0:
             print("Invalid Block No")
             return
-        data = self.physical.readDisk((self.disks[id])[blockNo])
+        data = self.physical.readDisk(self.disks[id][blockNo-1])
         return data
 
 
     def writeToDisk(self, id, blockNo, info):
-        self.physical.writeDisk(self.disks[id][blockNo], info)
+        self.physical.writeDisk(self.disks[id][blockNo-1], info)
 
 
 
@@ -61,7 +61,7 @@ class replication:
         if(id<=0):
             print("Invalid Disk ID")
             return
-        if(blockNo > len(self.disks[id])):
+        if blockNo > len(self.disks[id]) or blockNo < 0:
             print("Invalid Block No")
             return
         self.writeToDisk(id, blockNo, info)
@@ -76,8 +76,7 @@ class replication:
             return
         if(random.randint(1,100)<=10):
             # self.free.append((self.disks[id])[blockNo])
-            self.disks[id][blockNo] = self.free[0]
-            self.free = self.free[1:]
+            self.disks[id][blockNo] = self.free.pop()
             data = self.readFromDisk(-id, blockNo)
             self.writeToDisk(id, blockNo, data)
             return data
@@ -96,6 +95,6 @@ class replication:
 prt = replication()
 prt.createDiskR(1,140)
 prt.createDiskR(2,110)
-prt.writeToDiskR(1, 110 , "lol")
+prt.writeToDiskR(1, 110, "lol")
 prt.writeToDiskR(2, 110, "lol1")
-print(prt.readFromDiskR(2,110))
+print(prt.readFromDiskR(2, 110))

@@ -1,4 +1,5 @@
 from consolidate import consolidate
+import bisect
 
 class partition:
     def __init__(self):
@@ -26,21 +27,23 @@ class partition:
         self.disks[id] = d
 
     def deleteDisk(self,id):
-        self.free.extend(self.disks[id])
+        # self.free.extend(self.disks[id])
+        for i in self.free[id]:
+            bisect.insort(self.free, i)
         del self.disks[id]
 
     def readFromDisk(self, id, blockNo):
         if(id not in self.disks):
             print("No such Disk")
             return
-        if (blockNo >= len(self.disks[id])):
+        if blockNo > len(self.disks[id]) or blockNo < 0:
             print("Invalid Block No")
             return
-        data = self.physical.readDisk((self.disks[id])[blockNo])
+        data = self.physical.readDisk(self.disks[id][blockNo-1])
         return data
 
     def writeToDisk(self, id, blockNo, info):
-        self.physical.writeDisk((self.disks[id])[blockNo], info)
+        self.physical.writeDisk(self.disks[id][blockNo-1], info)
 
 prt = partition()
 prt.createDisk(1,140)

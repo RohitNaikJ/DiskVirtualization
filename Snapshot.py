@@ -10,7 +10,7 @@ class Snapshot:
         self.log = {}
 
     def createDisk(self, id, size):
-        if(id in self.disks):
+        if id in self.disks:
             print("diskId already exists")
             return
         d = []
@@ -19,7 +19,7 @@ class Snapshot:
             for i in self.free:
                 d.append(i)
                 j += 1
-                if(j==size):
+                if j == size:
                     break
         else:
             print("Space not Available!")
@@ -33,10 +33,10 @@ class Snapshot:
         del self.log[id]
 
     def readFromDisk(self, id, blockNo):
-        if(id not in self.disks):
+        if id not in self.disks:
             print("No such Disk")
             return
-        if (blockNo >= len(self.disks[id])):
+        if blockNo >= len(self.disks[id]):
             print("Invalid Block No")
             return
         data = self.physical.readDisk((self.disks[id])[blockNo])
