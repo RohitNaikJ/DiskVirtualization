@@ -25,10 +25,12 @@ class Snapshot:
             print("Space not Available!")
         self.free = [x for x in self.free if x not in d]
         self.disks[id] = d
+        self.log[id] = []
 
     def deleteDisk(self,id):
         self.free.extend(self.disks[id])
         del self.disks[id]
+        del self.log[id]
 
     def readFromDisk(self, id, blockNo):
         if(id not in self.disks):
@@ -41,5 +43,13 @@ class Snapshot:
         return data
 
     def writeToDisk(self, id, blockNo, info):
+        self.log[id].append((blockNo, self.physical.readDisk(self.disks[id][blockNo])))
         self.physical.writeDisk((self.disks[id])[blockNo], info)
 
+    def checkpoint(self, diskID):
+        return len(self.log[diskID])
+
+    def rollBack(self, diskID, checkpointID):
+        while len(self.log[diskID]) > checkpointID:
+            lastUpdate = self.log[diskID].pop()
+            self.physical.writeDisk(self.disks[diskID][lastUpdate[0]], lastUpdate[1])
