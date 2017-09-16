@@ -28,7 +28,7 @@ class partition:
 
     def deleteDisk(self,id):
         # self.free.extend(self.disks[id])
-        for i in self.free[id]:
+        for i in self.disks[id]:
             bisect.insort(self.free, i)
         del self.disks[id]
 
